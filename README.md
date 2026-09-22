@@ -51,6 +51,21 @@ La restauration ne détruit rien : un devis déjà présent est conservé tel qu
 seuls les devis absents sont ajoutés, et les réglages ne sont repris que si
 aucune identité n'est encore saisie.
 
+## Icônes
+
+L'interface utilisait des emoji comme pictogrammes, y compris dans les devis
+générés. Ils sont remplacés par un jeu de vingt icônes en trait, défini une
+fois en haut du fichier dans un `<svg>` masqué et réutilisé par `<use>` :
+
+```html
+<svg class="icone" viewBox="0 0 24 24"><use href="#i-client"/></svg>
+```
+
+Les icônes héritent de la couleur du texte qui les entoure (`currentColor`),
+et passent donc en blanc dans les pastilles de titre sans règle supplémentaire.
+En dessous de 600 px, les libellés des onglets sont masqués : les boutons
+portent un `aria-label` pour rester identifiables.
+
 ## Stack
 
 - HTML/CSS/JS en un seul fichier, sans framework

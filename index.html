@@ -17,7 +17,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--txt)}
 
-/* ── APP HEADER ── */
+/* App header */
 .app-header{background:var(--pri);padding:0 36px;display:flex;align-items:center;gap:0;box-shadow:0 2px 14px rgba(0,0,0,.3)}
 .app-header img{height:38px;border-radius:6px;object-fit:contain;margin-right:12px}
 .app-header .brand h1{color:#fff;font-size:1.2rem;letter-spacing:1px}
@@ -28,18 +28,24 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .nav-btn.active{color:#fff;border-bottom-color:var(--acc)}
 .nav-btn .badge{background:var(--acc);color:#fff;border-radius:10px;padding:1px 7px;font-size:.7rem;font-weight:700}
 
-/* ── PAGES ── */
+/* Pages */
 .page{display:none}.page.active{display:block}
 
-/* ── WRAP ── */
+/* Wrap */
 .wrap{max-width:900px;margin:28px auto;padding:0 18px 60px}
 
-/* ── CARD ── */
+/* Card */
 .card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:22px 26px;margin-bottom:18px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
 .card-title{font-size:.93rem;font-weight:700;margin-bottom:15px;display:flex;align-items:center;gap:9px}
-.card-title .ico{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,var(--acc),var(--acc2));display:flex;align-items:center;justify-content:center;font-size:.88rem;flex-shrink:0}
+/* Icones en trait, heritant de la couleur du texte environnant. */
+  .icone,.icone-pastille{stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+  .icone{width:1.05em;height:1.05em;vertical-align:-.16em}
+  .icone-pastille{width:16px;height:16px;color:#fff}
+  .nav-btn .icone{width:17px;height:17px}
+  .icone-vide{width:42px;height:42px;stroke-width:1.5;opacity:.45}
+  .ico{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,var(--acc),var(--acc2));display:flex;align-items:center;justify-content:center;font-size:.88rem;flex-shrink:0}
 
-/* ── FORM ── */
+/* Form */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .g1{display:grid;grid-template-columns:1fr;gap:12px}
 .fg{display:flex;flex-direction:column;gap:4px}
@@ -48,7 +54,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .fg input:focus,.fg textarea:focus,.fg select:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(233,69,96,.1);background:#fff}
 .fg textarea{resize:vertical;min-height:68px}
 
-/* ── PRESTATIONS ── */
+/* Prestations */
 #plist{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
 .prow{display:grid;grid-template-columns:1fr 140px 32px;gap:8px;align-items:center;background:#f7f8ff;border:1px solid var(--border);border-radius:8px;padding:9px 11px;transition:.2s}
 .prow:hover{border-color:var(--acc)}
@@ -65,12 +71,12 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .total-bar .lbl{font-size:.78rem;opacity:.75}
 .total-bar .amt{font-size:1.2rem;font-weight:800}
 
-/* ── BUTTONS ── */
+/* Buttons */
 .btns{display:flex;gap:10px}
 .btn-main{flex:1;padding:13px;font-size:.92rem;font-weight:700;cursor:pointer;font-family:inherit;background:linear-gradient(135deg,var(--acc),#c0392b);color:#fff;border:none;border-radius:10px;display:flex;align-items:center;justify-content:center;gap:8px;transition:.2s;box-shadow:0 4px 14px rgba(233,69,96,.3)}
 .btn-main:hover{opacity:.92;transform:translateY(-1px)}
 
-/* ── STATS GRID ── */
+/* Stats grid */
 .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
 .stat-card .s-lbl{font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
@@ -80,19 +86,19 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .stat-card.success .s-val{color:var(--success)}
 .stat-card.warn .s-val{color:var(--warn)}
 
-/* ── PERIOD FILTER ── */
+/* Period filter */
 .period-btns{flex-wrap:wrap;display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
 .pb{background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:7px 16px;font-size:.82rem;font-weight:600;cursor:pointer;font-family:inherit;color:var(--muted);transition:.2s}
 .pb:hover{border-color:var(--acc);color:var(--acc)}
 .pb.active{background:var(--acc);border-color:var(--acc);color:#fff}
 
-/* ── CHARTS ROW ── */
+/* Charts row */
 .charts-row{display:grid;grid-template-columns:1.6fr 1fr;gap:14px;margin-bottom:18px}
 .chart-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
 .chart-card .ch-title{font-size:.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px}
 .chart-card canvas{max-height:220px}
 
-/* ── HISTORY TABLE ── */
+/* History table */
 .hist-table{width:100%;border-collapse:collapse;font-size:.84rem}
 .hist-table th{text-align:left;padding:9px 12px;font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;border-bottom:2px solid var(--border)}
 .hist-table td{padding:10px 12px;border-bottom:1px solid #f0f2f8;color:var(--txt);vertical-align:middle}
@@ -108,11 +114,11 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .empty-state .es-icon{font-size:2.5rem;margin-bottom:10px}
 .empty-state p{font-size:.9rem}
 
-/* ── TOAST ── */
+/* Toast */
 #toast{position:fixed;bottom:24px;right:24px;background:var(--success);color:#fff;padding:11px 17px;border-radius:9px;font-weight:600;font-size:.86rem;box-shadow:0 4px 18px rgba(0,0,0,.18);transform:translateY(80px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:999}
 #toast.show{transform:translateY(0);opacity:1}
 
-/* ── OVERLAY PREVIEW ── */
+/* Overlay preview */
 #overlay{display:none;position:fixed;inset:0;background:rgba(10,10,30,.75);z-index:100;overflow-y:auto;padding:28px 16px}
 #overlay.open{display:flex;justify-content:center;align-items:flex-start}
 #preview-wrap{background:#fff;width:210mm;min-height:297mm;position:relative;box-shadow:0 8px 40px rgba(0,0,0,.4)}
@@ -125,7 +131,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 #btn-save:disabled{background:var(--muted);cursor:default}
 #btn-print{background:var(--acc2)}
 
-/* ── DEVIS TEMPLATE ── */
+/* Devis template */
 .dv-head{background:#1a1a2e;padding:20px 24px 0;position:relative}
 .dv-head-inner{display:flex;align-items:center;gap:14px;padding-bottom:16px}
 .dv-head img{height:46px;border-radius:7px;object-fit:contain}
@@ -182,6 +188,32 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 </head>
 <body>
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <g id="i-client"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></g>
+    <g id="i-mission"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 7h6M9 12h6M9 17h3"/></g>
+    <g id="i-prestations"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18"/></g>
+    <g id="i-options"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></g>
+    <g id="i-identite"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></g>
+    <g id="i-logo"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M3 17l5-4 4 3 3-2 6 5"/></g>
+    <g id="i-devise"><circle cx="12" cy="12" r="9"/><path d="M15 8.5a4 4 0 1 0 0 7M9 11h5M9 13.5h5"/></g>
+    <g id="i-info"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></g>
+    <g id="i-historique"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></g>
+    <g id="i-nouveau"><path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17v3z"/><path d="M14.5 6.5l3 3"/></g>
+    <g id="i-tableau"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></g>
+    <g id="i-apercu"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="2.5"/></g>
+    <g id="i-enregistrer"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></g>
+    <g id="i-imprimer"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7"/></g>
+    <g id="i-fermer"><path d="M6 6l12 12M18 6L6 18"/></g>
+    <g id="i-telecharger"><path d="M12 3v12M7 11l5 5 5-5M4 20h16"/></g>
+    <g id="i-televerser"><path d="M12 21V9M7 13l5-5 5 5M4 4h16"/></g>
+    <g id="i-valide"><path d="M20 6L9 17l-5-5"/></g>
+    <g id="i-annuler"><path d="M9 14l-5-5 5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></g>
+    <g id="i-vide"><path d="M3 13h4l2 3h6l2-3h4"/><path d="M5 13l2-7h10l2 7v5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z"/></g>
+  </defs>
+</svg>
+
+
 <!-- APP HEADER -->
 <div class="app-header">
   <img id="hdr-logo" alt="" hidden/>
@@ -190,25 +222,25 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
     <p id="hdr-sous">Gestion de devis</p>
   </div>
   <nav class="nav">
-    <button class="nav-btn active" onclick="showPage('form')" id="nav-form">
-      ✏️ <span>Nouveau Devis</span>
+    <button class="nav-btn active" onclick="showPage('form')" id="nav-form" aria-label="Nouveau devis" title="Nouveau devis">
+      <svg class="icone" viewBox="0 0 24 24"><use href="#i-nouveau"/></svg> <span>Nouveau Devis</span>
     </button>
-    <button class="nav-btn" onclick="showPage('dash')" id="nav-dash">
-      📊 <span>Tableau de bord</span>
+    <button class="nav-btn" onclick="showPage('dash')" id="nav-dash" aria-label="Tableau de bord" title="Tableau de bord">
+      <svg class="icone" viewBox="0 0 24 24"><use href="#i-tableau"/></svg> <span>Tableau de bord</span>
       <span class="badge" id="badge-count">0</span>
     </button>
-    <button class="nav-btn" onclick="showPage('reglages')" id="nav-reglages">
-      ⚙️ <span>Réglages</span>
+    <button class="nav-btn" onclick="showPage('reglages')" id="nav-reglages" aria-label="Réglages" title="Réglages">
+      <svg class="icone" viewBox="0 0 24 24"><use href="#i-options"/></svg> <span>Réglages</span>
     </button>
   </nav>
 </div>
 
-<!-- ══════════ PAGE: FORMULAIRE ══════════ -->
+<!-- PAGE: FORMULAIRE -->
 <div class="page active" id="page-form">
 <div class="wrap">
 
   <div class="card">
-    <div class="card-title"><span class="ico">👤</span>Client</div>
+    <div class="card-title"><span class="ico"><svg class="icone-pastille" viewBox="0 0 24 24"><use href="#i-client"/></svg></span>Client</div>
     <div class="g2">
       <div class="fg"><label for="cNom">Nom / Raison sociale *</label><input type="text" id="cNom" placeholder="Jean Dupont"/></div>
       <div class="fg"><label for="cEmail">Email</label><input type="email" id="cEmail" placeholder="client@email.com"/></div>
@@ -218,7 +250,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
   </div>
 
   <div class="card">
-    <div class="card-title"><span class="ico">📋</span>Mission</div>
+    <div class="card-title"><span class="ico"><svg class="icone-pastille" viewBox="0 0 24 24"><use href="#i-mission"/></svg></span>Mission</div>
     <div class="g1" style="margin-bottom:12px">
       <div class="fg"><label for="mTitre">Titre / Objet *</label><input type="text" id="mTitre" placeholder="Création site vitrine + app mobile"/></div>
     </div>
@@ -232,7 +264,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
   </div>
 
   <div class="card">
-    <div class="card-title"><span class="ico">💼</span>Prestations &amp; Tarifs</div>
+    <div class="card-title"><span class="ico"><svg class="icone-pastille" viewBox="0 0 24 24"><use href="#i-prestations"/></svg></span>Prestations &amp; Tarifs</div>
     <div id="plist"></div>
     <button class="btn-add" onclick="addPrest()">＋ Ajouter une prestation</button>
     <div class="total-bar" style="margin-top:14px">
@@ -242,7 +274,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
   </div>
 
   <div class="card">
-    <div class="card-title"><span class="ico">⚙️</span>Options</div>
+    <div class="card-title"><span class="ico"><svg class="icone-pastille" viewBox="0 0 24 24"><use href="#i-options"/></svg></span>Options</div>
     <div class="g2">
       <div class="fg"><label for="dNum">N° de devis</label><input type="text" id="dNum"/></div>
       <div class="fg"><label for="dPay">Paiement</label>
@@ -260,13 +292,13 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
   </div>
 
   <div class="btns">
-    <button class="btn-main" onclick="previewDevis()">👁 Aperçu &amp; PDF</button>
+    <button class="btn-main" onclick="previewDevis()"><svg class="icone" viewBox="0 0 24 24"><use href="#i-apercu"/></svg> Aperçu et PDF</button>
   </div>
 
 </div>
 </div><!-- /page-form -->
 
-<!-- ══════════ PAGE: TABLEAU DE BORD ══════════ -->
+<!-- PAGE: TABLEAU DE BORD -->
 <div class="page" id="page-dash">
 <div class="wrap">
 
@@ -276,8 +308,8 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
     <button class="pb"        onclick="setPeriod('prev')"   id="pb-prev">Mois précédent</button>
     <button class="pb"        onclick="setPeriod('all')"    id="pb-all">Tout voir</button>
     <span style="margin-left:auto;display:flex;gap:8px">
-      <button class="pb" onclick="exporterDevis()" title="Télécharger une copie de tous vos devis">⬇ Sauvegarder</button>
-      <button class="pb" onclick="document.getElementById('fichier-import').click()" title="Restaurer depuis un fichier de sauvegarde">⬆ Restaurer</button>
+      <button class="pb" onclick="exporterDevis()" title="Télécharger une copie de tous vos devis"><svg class="icone" viewBox="0 0 24 24"><use href="#i-telecharger"/></svg> Sauvegarder</button>
+      <button class="pb" onclick="document.getElementById('fichier-import').click()" title="Restaurer depuis un fichier de sauvegarde"><svg class="icone" viewBox="0 0 24 24"><use href="#i-televerser"/></svg> Restaurer</button>
       <input type="file" id="fichier-import" accept="application/json" style="display:none" onchange="importerDevis(this)"/>
     </span>
   </div>
@@ -304,30 +336,30 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
   <!-- CHARTS -->
   <div class="charts-row">
     <div class="chart-card">
-      <div class="ch-title">📈 Revenus par période</div>
+      <div class="ch-title">Revenus par période</div>
       <canvas id="chartBar"></canvas>
     </div>
     <div class="chart-card">
-      <div class="ch-title">🥧 Répartition clients</div>
+      <div class="ch-title">Répartition clients</div>
       <canvas id="chartDough"></canvas>
     </div>
   </div>
 
   <!-- HISTORIQUE -->
   <div class="card">
-    <div class="card-title"><span class="ico">📄</span>Historique des devis</div>
+    <div class="card-title"><span class="ico"><svg class="icone-pastille" viewBox="0 0 24 24"><use href="#i-historique"/></svg></span>Historique des devis</div>
     <div id="hist-wrap"></div>
   </div>
 
 </div>
 </div><!-- /page-dash -->
 
-<!-- ═══ PAGE RÉGLAGES ═══ -->
+<!-- PAGE RÉGLAGES -->
 <div class="page" id="page-reglages">
 <div class="wrap">
 
   <div class="card" id="carte-bienvenue" hidden>
-    <div class="card-title"><span class="ico">👋</span> Bienvenue</div>
+    <div class="card-title"><span class="ico"><svg class="icone-pastille" viewBox="0 0 24 24"><use href="#i-info"/></svg></span> Bienvenue</div>
     <p style="font-size:.9rem;line-height:1.6;color:var(--muted)">
       Renseignez l'identité qui apparaîtra sur vos devis. Ces informations
       restent dans ce navigateur : elles ne sont ni envoyées ni enregistrées
@@ -336,7 +368,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
   </div>
 
   <div class="card">
-    <div class="card-title"><span class="ico">🏢</span> Votre identité</div>
+    <div class="card-title"><span class="ico"><svg class="icone-pastille" viewBox="0 0 24 24"><use href="#i-identite"/></svg></span> Votre identité</div>
     <div class="g2">
       <div class="fg">
         <label for="aNom">Nom de la structure *</label>
@@ -366,7 +398,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
   </div>
 
   <div class="card">
-    <div class="card-title"><span class="ico">🖼</span> Logo</div>
+    <div class="card-title"><span class="ico"><svg class="icone-pastille" viewBox="0 0 24 24"><use href="#i-logo"/></svg></span> Logo</div>
     <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
       <img id="apercu-logo" alt="" hidden
            style="height:64px;border-radius:8px;object-fit:contain;border:1px solid var(--border);padding:4px;background:#fff"/>
@@ -382,7 +414,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
   </div>
 
   <div class="card">
-    <div class="card-title"><span class="ico">💱</span> Devise</div>
+    <div class="card-title"><span class="ico"><svg class="icone-pastille" viewBox="0 0 24 24"><use href="#i-devise"/></svg></span> Devise</div>
     <div class="g2">
       <div class="fg">
         <label for="aDevise">Symbole</label>
@@ -398,7 +430,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
     </div>
   </div>
 
-  <button class="btn-main" onclick="enregistrerReglages()">💾 Enregistrer les réglages</button>
+  <button class="btn-main" onclick="enregistrerReglages()"><svg class="icone" viewBox="0 0 24 24"><use href="#i-enregistrer"/></svg> Enregistrer les réglages</button>
 
 </div>
 </div><!-- /page-reglages -->
@@ -409,17 +441,15 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 <!-- OVERLAY PREVIEW -->
 <div id="overlay">
   <div id="overlay-actions">
-    <button id="btn-save" onclick="enregistrerDevis()">💾 Enregistrer</button>
-    <button id="btn-print" onclick="window.print()">🖨 Imprimer / PDF</button>
-    <button id="btn-close" onclick="closePreview()">✕ Fermer</button>
+    <button id="btn-save" onclick="enregistrerDevis()"><svg class="icone" viewBox="0 0 24 24"><use href="#i-enregistrer"/></svg> Enregistrer</button>
+    <button id="btn-print" onclick="window.print()"><svg class="icone" viewBox="0 0 24 24"><use href="#i-imprimer"/></svg> Imprimer / PDF</button>
+    <button id="btn-close" onclick="closePreview()"><svg class="icone" viewBox="0 0 24 24"><use href="#i-fermer"/></svg> Fermer</button>
   </div>
   <div id="preview-wrap"><div class="dv" id="dv-content"></div></div>
 </div>
 
 <script>
-/* ═══════════════════════════════════════════
-   STORAGE
-═══════════════════════════════════════════ */
+/* Storage */
 var STORE_KEY = 'uptech_devis';
 
 var AGENCE_KEY = 'uptech_agence';
@@ -503,7 +533,7 @@ function chargerLogo(input){
       majApercuLogo();
       toast('Logo chargé — pensez à enregistrer', '#f39c12');
     };
-    im.onerror = function(){ toast('⚠️ Image illisible', '#e94560'); };
+    im.onerror = function(){ toast('Image illisible', '#e94560'); };
     im.src = lecteur.result;
   };
   lecteur.readAsDataURL(f);
@@ -518,7 +548,7 @@ function retirerLogo(){
 
 function enregistrerReglages(){
   var nom = document.getElementById('aNom').value.trim();
-  if(!nom){ alert('⚠️ Le nom de la structure est nécessaire : il figure sur chaque devis.'); return; }
+  if(!nom){ alert('Le nom de la structure est nécessaire : il figure sur chaque devis.'); return; }
 
   AGENCE.nom          = nom;
   AGENCE.sous         = document.getElementById('aSous').value.trim();
@@ -532,13 +562,13 @@ function enregistrerReglages(){
   try{
     localStorage.setItem(AGENCE_KEY, JSON.stringify(AGENCE));
   }catch(e){
-    alert('⚠️ Enregistrement impossible : le stockage du navigateur est plein. Essayez un logo plus léger.');
+    alert('Enregistrement impossible : le stockage du navigateur est plein. Essayez un logo plus léger.');
     return;
   }
 
   appliquerAgence();
   document.getElementById('carte-bienvenue').hidden = true;
-  toast('✅ Réglages enregistrés');
+  toast('Réglages enregistrés');
 }
 
 function loadAll(){
@@ -562,7 +592,7 @@ function exporterDevis(){
   a.download = 'devis-uptech-' + new Date().toISOString().slice(0,10) + '.json';
   a.click();
   URL.revokeObjectURL(url);
-  toast('✅ ' + arr.length + ' devis sauvegardés');
+  toast('' + arr.length + ' devis sauvegardés');
 }
 
 function importerDevis(input){
@@ -596,10 +626,10 @@ function importerDevis(input){
 
       updateBadge();
       renderDash();
-      toast(ajoutes.length ? '✅ ' + ajoutes.length + ' devis restaurés'
+      toast(ajoutes.length ? '' + ajoutes.length + ' devis restaurés'
                            : 'Aucun nouveau devis dans ce fichier', ajoutes.length ? null : '#f39c12');
     }catch(e){
-      toast('⚠️ Fichier illisible', '#e94560');
+      toast('Fichier illisible', '#e94560');
     }
     input.value = '';
   };
@@ -616,9 +646,7 @@ function updateBadge(){
   document.getElementById('badge-count').textContent = loadAll().length;
 }
 
-/* ═══════════════════════════════════════════
-   NAVIGATION
-═══════════════════════════════════════════ */
+/* Navigation */
 function showPage(name){
   document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
   document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
@@ -628,9 +656,7 @@ function showPage(name){
   if(name==='reglages') remplirReglages();
 }
 
-/* ═══════════════════════════════════════════
-   FORM INIT
-═══════════════════════════════════════════ */
+/* Form init */
 var pid = 0;
 
 window.addEventListener('DOMContentLoaded', function(){
@@ -652,9 +678,7 @@ window.addEventListener('DOMContentLoaded', function(){
   if(!agenceConfiguree()) showPage('reglages');
 });
 
-/* ═══════════════════════════════════════════
-   PRESTATIONS
-═══════════════════════════════════════════ */
+/* Prestations */
 function addPrest(){
   pid++;
   var list=document.getElementById('plist');
@@ -664,7 +688,7 @@ function addPrest(){
   row.innerHTML=
     '<input type="text" class="pdesc" aria-label="Description de la prestation" placeholder="Description de la prestation" oninput="calcTotal()"/>'+
     '<div class="pw"><input type="number" class="pprix" aria-label="Montant de la prestation" placeholder="0" min="0" step="1" oninput="calcTotal()"/></div>'+
-    '<button class="btn-rm" onclick="rmPrest('+id+')" title="Supprimer">✕</button>';
+    '<button class="btn-rm" onclick="rmPrest('+id+')" title="Supprimer" aria-label="Supprimer la prestation"><svg class="icone" viewBox="0 0 24 24"><use href="#i-fermer"/></svg></button>';
   list.appendChild(row);
   row.querySelector('.pdesc').focus();
 }
@@ -679,9 +703,7 @@ function calcTotal(){
   return t;
 }
 
-/* ═══════════════════════════════════════════
-   HELPERS
-═══════════════════════════════════════════ */
+/* Helpers */
 function fmtDate(s){
   if(!s)return'—';
   var d=new Date(s+'T00:00');
@@ -711,9 +733,7 @@ function toast(msg,color){
   setTimeout(function(){ t.classList.remove('show'); },3800);
 }
 
-/* ═══════════════════════════════════════════
-   GENERATE PREVIEW
-═══════════════════════════════════════════ */
+/* Generate preview */
 /* Devis affiché dans l'aperçu, tant qu'il n'a pas été enregistré. */
 var devisEnCours = null;
 
@@ -721,11 +741,11 @@ function previewDevis(){
   var cNom=document.getElementById('cNom').value.trim();
   var mTitre=document.getElementById('mTitre').value.trim();
   var dDate=document.getElementById('dDate').value;
-  if(!cNom)  { alert('⚠️ Veuillez saisir le nom du client.'); return; }
-  if(!mTitre){ alert('⚠️ Veuillez saisir le titre de la mission.'); return; }
-  if(!dDate) { alert('⚠️ Veuillez saisir la date du devis.'); return; }
+  if(!cNom)  { alert('Veuillez saisir le nom du client.'); return; }
+  if(!mTitre){ alert('Veuillez saisir le titre de la mission.'); return; }
+  if(!dDate) { alert('Veuillez saisir la date du devis.'); return; }
   if(!agenceConfiguree()){
-    alert('⚠️ Renseignez d’abord votre identité dans l’onglet Réglages : elle figure sur le devis.');
+    alert('Renseignez d’abord votre identité dans l’onglet Réglages : elle figure sur le devis.');
     showPage('reglages');
     return;
   }
@@ -738,7 +758,7 @@ function previewDevis(){
   });
   var total=0; prest.forEach(function(p){ total+=p.prix; });
   if(!prest.length || total<=0){
-    alert('⚠️ Ajoutez au moins une prestation avec un montant supérieur à zéro.');
+    alert('Ajoutez au moins une prestation avec un montant supérieur à zéro.');
     return;
   }
 
@@ -768,8 +788,8 @@ function previewDevis(){
 
   var btn = document.getElementById('btn-save');
   btn.disabled = false;
-  btn.textContent = '💾 Enregistrer';
-  toast('👁 Aperçu — le devis n’est pas encore enregistré', '#f39c12');
+  btn.innerHTML = '<svg class="icone" viewBox="0 0 24 24"><use href="#i-enregistrer"/></svg> Enregistrer';
+  toast('Aperçu — le devis n’est pas encore enregistré', '#f39c12');
 }
 
 function enregistrerDevis(){
@@ -779,8 +799,8 @@ function enregistrerDevis(){
 
   var btn = document.getElementById('btn-save');
   btn.disabled = true;
-  btn.textContent = '✅ Enregistré';
-  toast('✅ Devis enregistré');
+  btn.innerHTML = '<svg class="icone" viewBox="0 0 24 24"><use href="#i-valide"/></svg> Enregistré';
+  toast('Devis enregistré');
 
   // Numéro suivant, une fois le précédent réellement conservé.
   var today=new Date();
@@ -795,9 +815,7 @@ function closePreview(){
   document.getElementById('overlay').classList.remove('open');
 }
 
-/* ═══════════════════════════════════════════
-   BUILD HTML PREVIEW
-═══════════════════════════════════════════ */
+/* Build html preview */
 function buildPreview(d){
   var rows='';
   d.prest.forEach(function(p){
@@ -847,9 +865,7 @@ function buildPreview(d){
   document.getElementById('dv-content').innerHTML=html;
 }
 
-/* ═══════════════════════════════════════════
-   DASHBOARD
-═══════════════════════════════════════════ */
+/* Dashboard */
 var currentPeriod='week';
 var chartBar=null, chartDough=null;
 
@@ -915,7 +931,7 @@ function renderDash(){
   renderHistory(filtered);
 }
 
-/* ── BAR CHART ── */
+/* Bar chart */
 function renderBarChart(data){
   // Group by date
   var groups={};
@@ -958,7 +974,7 @@ function renderBarChart(data){
   });
 }
 
-/* ── DOUGHNUT CHART ── */
+/* Doughnut chart */
 function renderDoughnut(data){
   // Group by client
   var groups={};
@@ -992,11 +1008,11 @@ function renderDoughnut(data){
   });
 }
 
-/* ── HISTORY TABLE ── */
+/* History table */
 function renderHistory(data){
   var wrap=document.getElementById('hist-wrap');
   if(!data.length){
-    wrap.innerHTML='<div class="empty-state"><div class="es-icon">📭</div><p>Aucun devis sur cette période.</p></div>';
+    wrap.innerHTML='<div class="empty-state"><div class="es-icon"><svg class="icone icone-vide" viewBox="0 0 24 24"><use href="#i-vide"/></svg></div><p>Aucun devis sur cette période.</p></div>';
     return;
   }
   var rows='';
@@ -1011,8 +1027,8 @@ function renderHistory(data){
       '<td class="amt">'+fmtMoney(d.total)+'</td>'+
       '<td>'+badge+'</td>'+
       '<td>'+
-        '<button class="hist-action" onclick="viewDevis(\''+d.id+'\')">👁 Voir</button> '+
-        '<button class="hist-action" onclick="toggleStatut(\''+d.id+'\')" style="margin-left:4px">'+(d.statut==='ok'?'↩ Annuler':'✅ Accepté')+'</button>'+
+        '<button class="hist-action" onclick="viewDevis(\''+d.id+'\')"><svg class="icone" viewBox="0 0 24 24"><use href="#i-apercu"/></svg> Voir</button> '+
+        '<button class="hist-action" onclick="toggleStatut(\''+d.id+'\')" style="margin-left:4px">'+(d.statut==='ok'?'<svg class="icone" viewBox="0 0 24 24"><use href="#i-annuler"/></svg> Annuler':'Accepté')+'</button>'+
       '</td>'+
     '</tr>';
   });
@@ -1038,7 +1054,7 @@ function toggleStatut(id){
   all[idx].statut=all[idx].statut==='ok'?'pending':'ok';
   saveAll(all);
   renderDash();
-  toast(all[idx].statut==='ok'?'✅ Devis marqué comme accepté':'↩ Statut remis en attente', all[idx].statut==='ok'?'#27ae60':'#e67e22');
+  toast(all[idx].statut==='ok'?'Devis marqué comme accepté':'Statut remis en attente', all[idx].statut==='ok'?'#27ae60':'#e67e22');
 }
 </script>
 </body>

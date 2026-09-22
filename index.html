@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>UpTech – Devis Pro</title>
+<title>Devis Pro</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 :root{
@@ -184,10 +184,10 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 
 <!-- APP HEADER -->
 <div class="app-header">
-  <img src="logo.jpeg" alt="UpTech" onerror="this.style.display='none'"/>
+  <img id="hdr-logo" alt="" hidden/>
   <div class="brand">
-    <h1>UpTech</h1>
-    <p>Gestion de Devis</p>
+    <h1 id="hdr-nom">Devis Pro</h1>
+    <p id="hdr-sous">Gestion de devis</p>
   </div>
   <nav class="nav">
     <button class="nav-btn active" onclick="showPage('form')" id="nav-form">
@@ -196,6 +196,9 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
     <button class="nav-btn" onclick="showPage('dash')" id="nav-dash">
       📊 <span>Tableau de bord</span>
       <span class="badge" id="badge-count">0</span>
+    </button>
+    <button class="nav-btn" onclick="showPage('reglages')" id="nav-reglages">
+      ⚙️ <span>Réglages</span>
     </button>
   </nav>
 </div>
@@ -319,6 +322,87 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 </div>
 </div><!-- /page-dash -->
 
+<!-- ═══ PAGE RÉGLAGES ═══ -->
+<div class="page" id="page-reglages">
+<div class="wrap">
+
+  <div class="card" id="carte-bienvenue" hidden>
+    <div class="card-title"><span class="ico">👋</span> Bienvenue</div>
+    <p style="font-size:.9rem;line-height:1.6;color:var(--muted)">
+      Renseignez l'identité qui apparaîtra sur vos devis. Ces informations
+      restent dans ce navigateur : elles ne sont ni envoyées ni enregistrées
+      ailleurs, et ne figurent pas dans le code de l'application.
+    </p>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">🏢</span> Votre identité</div>
+    <div class="g2">
+      <div class="fg">
+        <label for="aNom">Nom de la structure *</label>
+        <input type="text" id="aNom" placeholder="Mon Agence"/>
+      </div>
+      <div class="fg">
+        <label for="aSous">Activité</label>
+        <input type="text" id="aSous" placeholder="Agence digitale – Web &amp; Mobile"/>
+      </div>
+      <div class="fg">
+        <label for="aEmail">Email</label>
+        <input type="email" id="aEmail" placeholder="contact@monagence.com"/>
+      </div>
+      <div class="fg">
+        <label for="aTel">Téléphone</label>
+        <input type="tel" id="aTel" placeholder="+229 00 00 00 00"/>
+      </div>
+      <div class="fg">
+        <label for="aRepresentant">Représentant</label>
+        <input type="text" id="aRepresentant" placeholder="Prénom Nom"/>
+      </div>
+      <div class="fg">
+        <label for="aFonction">Fonction</label>
+        <input type="text" id="aFonction" placeholder="Fondatrice &amp; développeuse"/>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">🖼</span> Logo</div>
+    <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+      <img id="apercu-logo" alt="" hidden
+           style="height:64px;border-radius:8px;object-fit:contain;border:1px solid var(--border);padding:4px;background:#fff"/>
+      <div style="display:flex;gap:9px;flex-wrap:wrap">
+        <button class="pb" onclick="document.getElementById('fichier-logo').click()">Choisir une image</button>
+        <button class="pb" id="btn-rm-logo" onclick="retirerLogo()" hidden>Retirer</button>
+        <input type="file" id="fichier-logo" accept="image/*" style="display:none" onchange="chargerLogo(this)"/>
+      </div>
+      <p style="font-size:.76rem;color:var(--muted);flex:1;min-width:200px;margin:0">
+        Redimensionné automatiquement à 256 px et conservé dans ce navigateur.
+      </p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">💱</span> Devise</div>
+    <div class="g2">
+      <div class="fg">
+        <label for="aDevise">Symbole</label>
+        <input type="text" id="aDevise" placeholder="FCFA" maxlength="8"/>
+      </div>
+      <div class="fg">
+        <label for="aDecimales">Décimales</label>
+        <select id="aDecimales">
+          <option value="0">0 — 475 000 FCFA</option>
+          <option value="2">2 — 475 000,00 €</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-main" onclick="enregistrerReglages()">💾 Enregistrer les réglages</button>
+
+</div>
+</div><!-- /page-reglages -->
+
 <!-- TOAST -->
 <div id="toast"></div>
 
@@ -338,12 +422,124 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 ═══════════════════════════════════════════ */
 var STORE_KEY = 'uptech_devis';
 
-/* Devise utilisée partout dans l'application. Pour facturer dans une autre
-   monnaie, il suffit de modifier ces deux valeurs : le symbole des champs de
-   saisie, des totaux, du devis imprimé et des graphiques suit automatiquement. */
+var AGENCE_KEY = 'uptech_agence';
+
+/* Identité affichée sur les devis. Volontairement vide dans le code : elle est
+   saisie une fois dans l'onglet Réglages et vit dans ce navigateur. Quelqu'un
+   qui récupère ce fichier obtient donc un générateur vierge, et non un
+   générateur de devis à votre nom. */
+var AGENCE = {
+  nom: '', sous: '', email: '', tel: '',
+  representant: '', fonction: '', logo: '',
+  devise: 'FCFA', decimales: 0
+};
+
 var DEVISE = { symbole: 'FCFA', decimales: 0 };
 
-document.documentElement.style.setProperty('--devise', '"' + DEVISE.symbole + '"');
+function chargerAgence(){
+  try{
+    var brut = JSON.parse(localStorage.getItem(AGENCE_KEY) || '{}');
+    Object.keys(AGENCE).forEach(function(k){
+      if(brut[k] !== undefined && brut[k] !== null) AGENCE[k] = brut[k];
+    });
+  }catch(e){ /* réglages illisibles : on garde les valeurs par défaut */ }
+  appliquerAgence();
+}
+
+function agenceConfiguree(){ return !!AGENCE.nom.trim(); }
+
+/* Propage l'identité et la devise à l'interface. */
+function appliquerAgence(){
+  DEVISE.symbole   = AGENCE.devise || 'FCFA';
+  DEVISE.decimales = Number(AGENCE.decimales) || 0;
+  document.documentElement.style.setProperty('--devise', '"' + DEVISE.symbole + '"');
+
+  document.getElementById('hdr-nom').textContent  = AGENCE.nom || 'Devis Pro';
+  document.getElementById('hdr-sous').textContent = AGENCE.sous || 'Gestion de devis';
+
+  var img = document.getElementById('hdr-logo');
+  if(AGENCE.logo){ img.src = AGENCE.logo; img.hidden = false; }
+  else { img.removeAttribute('src'); img.hidden = true; }
+
+  document.title = AGENCE.nom ? AGENCE.nom + ' – Devis Pro' : 'Devis Pro';
+  if(typeof calcTotal === 'function') calcTotal();
+}
+
+/* Remplit le formulaire de réglages avec les valeurs en cours. */
+function remplirReglages(){
+  var champs = {aNom:'nom', aSous:'sous', aEmail:'email', aTel:'tel',
+                aRepresentant:'representant', aFonction:'fonction',
+                aDevise:'devise', aDecimales:'decimales'};
+  Object.keys(champs).forEach(function(id){
+    document.getElementById(id).value = AGENCE[champs[id]];
+  });
+  majApercuLogo();
+  document.getElementById('carte-bienvenue').hidden = agenceConfiguree();
+}
+
+function majApercuLogo(){
+  var img = document.getElementById('apercu-logo');
+  var btn = document.getElementById('btn-rm-logo');
+  if(AGENCE.logo){ img.src = AGENCE.logo; img.hidden = false; btn.hidden = false; }
+  else { img.removeAttribute('src'); img.hidden = true; btn.hidden = true; }
+}
+
+/* Le logo est réduit à 256 px avant stockage : le localStorage est limité à
+   quelques mégaoctets, une photo brute le saturerait. */
+function chargerLogo(input){
+  var f = input.files && input.files[0];
+  if(!f) return;
+  var lecteur = new FileReader();
+  lecteur.onload = function(){
+    var im = new Image();
+    im.onload = function(){
+      var max = 256;
+      var ech = Math.min(1, max / Math.max(im.width, im.height));
+      var c = document.createElement('canvas');
+      c.width  = Math.round(im.width  * ech);
+      c.height = Math.round(im.height * ech);
+      c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+      AGENCE.logo = c.toDataURL('image/png');
+      majApercuLogo();
+      toast('Logo chargé — pensez à enregistrer', '#f39c12');
+    };
+    im.onerror = function(){ toast('⚠️ Image illisible', '#e94560'); };
+    im.src = lecteur.result;
+  };
+  lecteur.readAsDataURL(f);
+  input.value = '';
+}
+
+function retirerLogo(){
+  AGENCE.logo = '';
+  majApercuLogo();
+  toast('Logo retiré — pensez à enregistrer', '#f39c12');
+}
+
+function enregistrerReglages(){
+  var nom = document.getElementById('aNom').value.trim();
+  if(!nom){ alert('⚠️ Le nom de la structure est nécessaire : il figure sur chaque devis.'); return; }
+
+  AGENCE.nom          = nom;
+  AGENCE.sous         = document.getElementById('aSous').value.trim();
+  AGENCE.email        = document.getElementById('aEmail').value.trim();
+  AGENCE.tel          = document.getElementById('aTel').value.trim();
+  AGENCE.representant = document.getElementById('aRepresentant').value.trim();
+  AGENCE.fonction     = document.getElementById('aFonction').value.trim();
+  AGENCE.devise       = document.getElementById('aDevise').value.trim() || 'FCFA';
+  AGENCE.decimales    = Number(document.getElementById('aDecimales').value) || 0;
+
+  try{
+    localStorage.setItem(AGENCE_KEY, JSON.stringify(AGENCE));
+  }catch(e){
+    alert('⚠️ Enregistrement impossible : le stockage du navigateur est plein. Essayez un logo plus léger.');
+    return;
+  }
+
+  appliquerAgence();
+  document.getElementById('carte-bienvenue').hidden = true;
+  toast('✅ Réglages enregistrés');
+}
 
 function loadAll(){
   try{ return JSON.parse(localStorage.getItem(STORE_KEY)||'[]'); }
@@ -358,7 +554,8 @@ function exporterDevis(){
   var arr = loadAll();
   if(!arr.length){ toast('Aucun devis à sauvegarder', '#f39c12'); return; }
 
-  var contenu = JSON.stringify({ version:1, exporte: new Date().toISOString(), devis: arr }, null, 2);
+  var contenu = JSON.stringify({ version:1, exporte: new Date().toISOString(),
+                                 agence: AGENCE, devis: arr }, null, 2);
   var url = URL.createObjectURL(new Blob([contenu], {type:'application/json'}));
   var a = document.createElement('a');
   a.href = url;
@@ -386,6 +583,17 @@ function importerDevis(input){
       var ajoutes = entrants.filter(function(d){ return d && d.id && !connus[d.id]; });
 
       saveAll(actuels.concat(ajoutes).sort(function(a,b){ return b.id - a.id; }));
+
+      // Les réglages ne sont restaurés que s'ils manquent : une sauvegarde
+      // ancienne ne doit pas écraser une identité déjà saisie.
+      if(donnees.agence && !agenceConfiguree()){
+        Object.keys(AGENCE).forEach(function(k){
+          if(donnees.agence[k] !== undefined) AGENCE[k] = donnees.agence[k];
+        });
+        localStorage.setItem(AGENCE_KEY, JSON.stringify(AGENCE));
+        appliquerAgence();
+      }
+
       updateBadge();
       renderDash();
       toast(ajoutes.length ? '✅ ' + ajoutes.length + ' devis restaurés'
@@ -417,15 +625,13 @@ function showPage(name){
   document.getElementById('page-'+name).classList.add('active');
   document.getElementById('nav-'+name).classList.add('active');
   if(name==='dash') renderDash();
+  if(name==='reglages') remplirReglages();
 }
 
 /* ═══════════════════════════════════════════
    FORM INIT
 ═══════════════════════════════════════════ */
 var pid = 0;
-/* L'aperçu est rendu dans la page elle-même : un chemin relatif suffit,
-   y compris à l'impression. Le logo était auparavant dupliqué en base64. */
-var LOGO = 'logo.jpeg';
 
 window.addEventListener('DOMContentLoaded', function(){
   var today = new Date();
@@ -437,9 +643,13 @@ window.addEventListener('DOMContentLoaded', function(){
   var r=String(Math.floor(Math.random()*900)+100);
   document.getElementById('dNum').value='DEV-'+y+m+'-'+r;
   addPrest(); addPrest();
+  chargerAgence();
   updateBadge();
   // Init period
   setPeriod('week');
+
+  // Première utilisation : l'identité doit être saisie avant tout devis.
+  if(!agenceConfiguree()) showPage('reglages');
 });
 
 /* ═══════════════════════════════════════════
@@ -514,6 +724,11 @@ function previewDevis(){
   if(!cNom)  { alert('⚠️ Veuillez saisir le nom du client.'); return; }
   if(!mTitre){ alert('⚠️ Veuillez saisir le titre de la mission.'); return; }
   if(!dDate) { alert('⚠️ Veuillez saisir la date du devis.'); return; }
+  if(!agenceConfiguree()){
+    alert('⚠️ Renseignez d’abord votre identité dans l’onglet Réglages : elle figure sur le devis.');
+    showPage('reglages');
+    return;
+  }
 
   var prest=[];
   document.querySelectorAll('.prow').forEach(function(row){
@@ -592,9 +807,11 @@ function buildPreview(d){
     '<div class="dv-head">'+
       '<div class="dv-badge">DEVIS</div>'+
       '<div class="dv-head-inner">'+
-        '<img src="'+LOGO+'" alt="UpTech" style="height:46px;border-radius:7px;object-fit:contain"/>'+
-        '<div><div class="co-name">UpTech</div><div class="co-sub">Agence Digitale – Web &amp; Mobile</div><div class="co-email">olivetokponwe@gmail.com</div></div>'+
-      '</div>'+
+        (AGENCE.logo ? '<img src="'+AGENCE.logo+'" alt="" style="height:46px;border-radius:7px;object-fit:contain"/>' : '')+
+        '<div><div class="co-name">'+esc(AGENCE.nom)+'</div>'+
+          (AGENCE.sous  ? '<div class="co-sub">'+esc(AGENCE.sous)+'</div>'    : '')+
+          (AGENCE.email ? '<div class="co-email">'+esc(AGENCE.email)+'</div>' : '')+
+        '</div>'+
     '</div>'+
     '<div class="dv-stripe"></div>'+
     '<div class="dv-meta">'+
@@ -603,7 +820,14 @@ function buildPreview(d){
       '<div class="dv-mc"><div class="ml">Valide jusqu\'au</div><div class="mv">'+fmtDate(d.valid)+'</div></div>'+
     '</div>'+
     '<div class="dv-parties">'+
-      '<div class="dv-party from"><div class="dv-ph">DE</div><div class="dv-pb"><div class="dv-pname">UpTech – TOKPONWE Olive</div><div class="dv-pinfo">olivetokponwe@gmail.com<br>Développeur Web &amp; Mobile<br>Fondateur – UpTech Agence Digitale</div></div></div>'+
+      '<div class="dv-party from"><div class="dv-ph">DE</div><div class="dv-pb">'+
+        '<div class="dv-pname">'+esc(AGENCE.nom + (AGENCE.representant ? ' – ' + AGENCE.representant : ''))+'</div>'+
+        '<div class="dv-pinfo">'+
+          (AGENCE.email    ? esc(AGENCE.email)+'<br>' : '')+
+          (AGENCE.tel      ? esc(AGENCE.tel)+'<br>'   : '')+
+          (AGENCE.fonction ? esc(AGENCE.fonction)     : '')+
+        '</div></div></div>'+
+
       '<div class="dv-party to"><div class="dv-ph">POUR</div><div class="dv-pb"><div class="dv-pname">'+esc(d.cNom)+'</div><div class="dv-pinfo">'+
         (d.cEmail?esc(d.cEmail)+'<br>':'')+(d.cTel?esc(d.cTel)+'<br>':'')+(d.cVille?esc(d.cVille):'')+
       '</div></div></div>'+
@@ -616,7 +840,9 @@ function buildPreview(d){
       '<div class="dv-ttl"><span class="tl">TOTAL HT</span><span class="tv">'+fmtMoney(d.total)+'</span></div>'+
     '</div>'+
     '<div class="dv-cond"><div class="ct">Conditions &amp; Notes</div><div class="cb"><strong>Paiement :</strong> '+esc(d.pay)+(d.notes?'<br>'+esc(d.notes):'')+' </div></div>'+
-    '<div class="dv-footer"><div class="fs"></div><p>UpTech – Agence Digitale | olivetokponwe@gmail.com</p><p>Ce devis est valable jusqu\'au '+fmtDate(d.valid)+'</p></div>';
+    '<div class="dv-footer"><div class="fs"></div>'+
+      '<p>'+esc([AGENCE.nom, AGENCE.sous, AGENCE.email].filter(Boolean).join(' | '))+'</p>'+
+      '<p>Ce devis est valable jusqu’au '+fmtDate(d.valid)+'</p></div>';
 
   document.getElementById('dv-content').innerHTML=html;
 }

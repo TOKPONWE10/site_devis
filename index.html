@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>UpTech – Devis Pro</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --pri:#1a1a2e;--acc:#e94560;--acc2:#0f3460;
+  --bg:#f0f2f8;--card:#fff;--border:#dde3f0;
+  --txt:#1a1a2e;--muted:#7b8a9a;--success:#27ae60;
+  /* Symbole affiché devant les champs de prix, synchronisé par JS sur DEVISE. */
+  --devise:"FCFA";
+  --warn:#f39c12;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--txt)}
+
+/* ── APP HEADER ── */
+.app-header{background:var(--pri);padding:0 36px;display:flex;align-items:center;gap:0;box-shadow:0 2px 14px rgba(0,0,0,.3)}
+.app-header img{height:38px;border-radius:6px;object-fit:contain;margin-right:12px}
+.app-header .brand h1{color:#fff;font-size:1.2rem;letter-spacing:1px}
+.app-header .brand p{color:#a0aec0;font-size:.72rem}
+.nav{display:flex;margin-left:auto;gap:0}
+.nav-btn{background:transparent;border:none;color:#a0aec0;padding:20px 22px;font-size:.88rem;font-weight:600;cursor:pointer;font-family:inherit;border-bottom:3px solid transparent;transition:.2s;display:flex;align-items:center;gap:7px}
+.nav-btn:hover{color:#fff}
+.nav-btn.active{color:#fff;border-bottom-color:var(--acc)}
+.nav-btn .badge{background:var(--acc);color:#fff;border-radius:10px;padding:1px 7px;font-size:.7rem;font-weight:700}
+
+/* ── PAGES ── */
+.page{display:none}.page.active{display:block}
+
+/* ── WRAP ── */
+.wrap{max-width:900px;margin:28px auto;padding:0 18px 60px}
+
+/* ── CARD ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:22px 26px;margin-bottom:18px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.card-title{font-size:.93rem;font-weight:700;margin-bottom:15px;display:flex;align-items:center;gap:9px}
+.card-title .ico{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,var(--acc),var(--acc2));display:flex;align-items:center;justify-content:center;font-size:.88rem;flex-shrink:0}
+
+/* ── FORM ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g1{display:grid;grid-template-columns:1fr;gap:12px}
+.fg{display:flex;flex-direction:column;gap:4px}
+.fg label{font-size:.7rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.7px}
+.fg input,.fg textarea,.fg select{border:1.5px solid var(--border);border-radius:7px;padding:8px 11px;font-size:.87rem;font-family:inherit;color:var(--txt);background:#fafbff;outline:none;transition:.2s}
+.fg input:focus,.fg textarea:focus,.fg select:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(233,69,96,.1);background:#fff}
+.fg textarea{resize:vertical;min-height:68px}
+
+/* ── PRESTATIONS ── */
+#plist{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.prow{display:grid;grid-template-columns:1fr 140px 32px;gap:8px;align-items:center;background:#f7f8ff;border:1px solid var(--border);border-radius:8px;padding:9px 11px;transition:.2s}
+.prow:hover{border-color:var(--acc)}
+.prow input{border:1.5px solid var(--border);border-radius:6px;padding:6px 10px;font-size:.85rem;font-family:inherit;width:100%;outline:none;background:#fff}
+.prow input:focus{border-color:var(--acc)}
+.pw{position:relative;display:flex;align-items:center}
+.pw::before{content:var(--devise);position:absolute;left:9px;font-size:.78rem;color:var(--muted);font-weight:700}
+.pw input{padding-left:48px}
+.btn-rm{width:30px;height:30px;background:#ffe8ed;border:none;border-radius:6px;cursor:pointer;color:var(--acc);display:flex;align-items:center;justify-content:center;transition:.2s;flex-shrink:0;font-size:.9rem}
+.btn-rm:hover{background:var(--acc);color:#fff}
+.btn-add{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1.5px dashed var(--acc);border-radius:7px;padding:6px 14px;color:var(--acc);font-size:.83rem;font-weight:600;cursor:pointer;transition:.2s;font-family:inherit}
+.btn-add:hover{background:var(--acc);color:#fff}
+.total-bar{display:flex;justify-content:flex-end;align-items:center;gap:10px;margin-top:12px;padding:11px 15px;background:linear-gradient(135deg,var(--pri),var(--acc2));border-radius:9px;color:#fff}
+.total-bar .lbl{font-size:.78rem;opacity:.75}
+.total-bar .amt{font-size:1.2rem;font-weight:800}
+
+/* ── BUTTONS ── */
+.btns{display:flex;gap:10px}
+.btn-main{flex:1;padding:13px;font-size:.92rem;font-weight:700;cursor:pointer;font-family:inherit;background:linear-gradient(135deg,var(--acc),#c0392b);color:#fff;border:none;border-radius:10px;display:flex;align-items:center;justify-content:center;gap:8px;transition:.2s;box-shadow:0 4px 14px rgba(233,69,96,.3)}
+.btn-main:hover{opacity:.92;transform:translateY(-1px)}
+
+/* ── STATS GRID ── */
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.stat-card .s-lbl{font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
+.stat-card .s-val{font-size:1.6rem;font-weight:800;color:var(--txt)}
+.stat-card .s-sub{font-size:.75rem;color:var(--muted);margin-top:3px}
+.stat-card.accent .s-val{color:var(--acc)}
+.stat-card.success .s-val{color:var(--success)}
+.stat-card.warn .s-val{color:var(--warn)}
+
+/* ── PERIOD FILTER ── */
+.period-btns{flex-wrap:wrap;display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.pb{background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:7px 16px;font-size:.82rem;font-weight:600;cursor:pointer;font-family:inherit;color:var(--muted);transition:.2s}
+.pb:hover{border-color:var(--acc);color:var(--acc)}
+.pb.active{background:var(--acc);border-color:var(--acc);color:#fff}
+
+/* ── CHARTS ROW ── */
+.charts-row{display:grid;grid-template-columns:1.6fr 1fr;gap:14px;margin-bottom:18px}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.chart-card .ch-title{font-size:.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px}
+.chart-card canvas{max-height:220px}
+
+/* ── HISTORY TABLE ── */
+.hist-table{width:100%;border-collapse:collapse;font-size:.84rem}
+.hist-table th{text-align:left;padding:9px 12px;font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;border-bottom:2px solid var(--border)}
+.hist-table td{padding:10px 12px;border-bottom:1px solid #f0f2f8;color:var(--txt);vertical-align:middle}
+.hist-table tr:hover td{background:#f7f8ff}
+.hist-table .amt{font-weight:700;color:var(--acc2)}
+.hist-table .date{color:var(--muted);font-size:.8rem}
+.badge-s{display:inline-block;padding:3px 9px;border-radius:20px;font-size:.7rem;font-weight:700}
+.badge-s.pending{background:#fff3e0;color:#e67e22}
+.badge-s.ok{background:#e8f8f0;color:#27ae60}
+.hist-action{background:none;border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:.75rem;cursor:pointer;font-family:inherit;color:var(--muted);transition:.2s}
+.hist-action:hover{border-color:var(--acc);color:var(--acc)}
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty-state .es-icon{font-size:2.5rem;margin-bottom:10px}
+.empty-state p{font-size:.9rem}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:24px;right:24px;background:var(--success);color:#fff;padding:11px 17px;border-radius:9px;font-weight:600;font-size:.86rem;box-shadow:0 4px 18px rgba(0,0,0,.18);transform:translateY(80px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:999}
+#toast.show{transform:translateY(0);opacity:1}
+
+/* ── OVERLAY PREVIEW ── */
+#overlay{display:none;position:fixed;inset:0;background:rgba(10,10,30,.75);z-index:100;overflow-y:auto;padding:28px 16px}
+#overlay.open{display:flex;justify-content:center;align-items:flex-start}
+#preview-wrap{background:#fff;width:210mm;min-height:297mm;position:relative;box-shadow:0 8px 40px rgba(0,0,0,.4)}
+/* Les trois boutons vivent dans une barre flex : leur largeur peut changer
+   avec le libellé sans qu'aucun décalage ne soit à recalculer. */
+#overlay-actions{position:fixed;top:16px;right:16px;z-index:200;display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+#overlay-actions button{border:none;border-radius:8px;padding:8px 16px;font-weight:700;font-size:.87rem;cursor:pointer;font-family:inherit;color:#fff}
+#btn-close{background:var(--acc)}
+#btn-save{background:var(--success)}
+#btn-save:disabled{background:var(--muted);cursor:default}
+#btn-print{background:var(--acc2)}
+
+/* ── DEVIS TEMPLATE ── */
+.dv-head{background:#1a1a2e;padding:20px 24px 0;position:relative}
+.dv-head-inner{display:flex;align-items:center;gap:14px;padding-bottom:16px}
+.dv-head img{height:46px;border-radius:7px;object-fit:contain}
+.dv-head .co-name{color:#fff;font-size:1.4rem;font-weight:800}
+.dv-head .co-sub{color:#a0aec0;font-size:.76rem;margin-top:2px}
+.dv-head .co-email{color:#8fa3c0;font-size:.76rem;margin-top:3px}
+.dv-badge{position:absolute;right:24px;top:20px;background:#e94560;color:#fff;padding:5px 16px;border-radius:6px;font-size:1rem;font-weight:800;letter-spacing:1px}
+.dv-stripe{height:3px;background:#e94560}
+.dv-meta{display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid #dde3f0;background:#f7f8fc}
+.dv-mc{padding:9px 0;text-align:center;border-right:1px solid #dde3f0}
+.dv-mc:last-child{border-right:none}
+.dv-mc .ml{font-size:.62rem;font-weight:700;color:#7b8a9a;text-transform:uppercase;letter-spacing:.7px}
+.dv-mc .mv{font-size:.86rem;font-weight:700;color:#1a1a2e;margin-top:2px}
+.dv-parties{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 20px}
+.dv-party{border-radius:7px;overflow:hidden;border:1px solid #dde3f0}
+.dv-ph{padding:5px 11px;font-size:.68rem;font-weight:700;color:#fff;letter-spacing:.7px}
+.dv-party.from .dv-ph{background:#0f3460}
+.dv-party.to .dv-ph{background:#e94560}
+.dv-pb{padding:9px 11px;background:#fafbff}
+.dv-pname{font-size:.88rem;font-weight:700;color:#1a1a2e;margin-bottom:3px}
+.dv-pinfo{font-size:.76rem;color:#7b8a9a;line-height:1.6}
+.dv-objet{margin:0 20px 8px;background:#f0f2f8;border-radius:6px;padding:7px 13px;display:flex;align-items:center;gap:9px}
+.dv-objet .ol{font-size:.66rem;font-weight:700;color:#e94560;text-transform:uppercase;letter-spacing:.7px;white-space:nowrap}
+.dv-objet .ov{font-size:.88rem;font-weight:600}
+.dv-desc{margin:0 20px 12px;font-size:.78rem;color:#7b8a9a;line-height:1.6}
+.dv-table{margin:0 20px 4px;border-radius:7px;overflow:hidden;border:1px solid #dde3f0}
+.dv-th{display:grid;grid-template-columns:1fr 110px;background:#1a1a2e;padding:7px 13px}
+.dv-th span{font-size:.68rem;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.7px}
+.dv-th span:last-child{text-align:right}
+.dv-tr{display:grid;grid-template-columns:1fr 110px;padding:7px 13px;border-top:1px solid #dde3f0}
+.dv-tr:nth-child(even){background:#f7f8ff}
+.dv-tr .dc{font-size:.8rem;color:#1a1a2e}
+.dv-tr .dp{font-size:.8rem;font-weight:700;color:#0f3460;text-align:right}
+.dv-ttl{display:grid;grid-template-columns:1fr 110px;background:#1a1a2e;padding:9px 13px}
+.dv-ttl .tl{font-size:.78rem;font-weight:700;color:#fff}
+.dv-ttl .tv{font-size:.96rem;font-weight:800;color:#e94560;text-align:right}
+.dv-cond{margin:12px 20px 0;background:#f7f8fc;border-radius:6px;padding:9px 13px}
+.dv-cond .ct{font-size:.66rem;font-weight:700;color:#0f3460;text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px}
+.dv-cond .cb{font-size:.76rem;color:#7b8a9a;line-height:1.6}
+.dv-footer{margin-top:18px;background:#1a1a2e;padding:9px 20px;text-align:center}
+.dv-footer .fs{height:2px;background:#e94560;margin-bottom:7px}
+.dv-footer p{font-size:.7rem;color:#a0aec0}
+
+@media(max-width:600px){.g2,.stats-grid,.charts-row{grid-template-columns:1fr}.app-header{padding:0 16px}.nav-btn span{display:none}.wrap{padding:0 12px 40px}}
+
+@media print{
+  #overlay{position:static!important;background:transparent!important;padding:0!important;display:block!important}
+  #overlay-actions,.app-header,.wrap{display:none!important}
+  #preview-wrap{box-shadow:none;width:100%}
+  body{background:#fff}
+  @page{margin:0;size:A4}
+}
+</style>
+</head>
+<body>
+
+<!-- APP HEADER -->
+<div class="app-header">
+  <img src="logo.jpeg" alt="UpTech" onerror="this.style.display='none'"/>
+  <div class="brand">
+    <h1>UpTech</h1>
+    <p>Gestion de Devis</p>
+  </div>
+  <nav class="nav">
+    <button class="nav-btn active" onclick="showPage('form')" id="nav-form">
+      ✏️ <span>Nouveau Devis</span>
+    </button>
+    <button class="nav-btn" onclick="showPage('dash')" id="nav-dash">
+      📊 <span>Tableau de bord</span>
+      <span class="badge" id="badge-count">0</span>
+    </button>
+  </nav>
+</div>
+
+<!-- ══════════ PAGE: FORMULAIRE ══════════ -->
+<div class="page active" id="page-form">
+<div class="wrap">
+
+  <div class="card">
+    <div class="card-title"><span class="ico">👤</span>Client</div>
+    <div class="g2">
+      <div class="fg"><label for="cNom">Nom / Raison sociale *</label><input type="text" id="cNom" placeholder="Jean Dupont"/></div>
+      <div class="fg"><label for="cEmail">Email</label><input type="email" id="cEmail" placeholder="client@email.com"/></div>
+      <div class="fg"><label for="cTel">Téléphone</label><input type="tel" id="cTel" placeholder="+229 00 00 00 00"/></div>
+      <div class="fg"><label for="cVille">Ville / Pays</label><input type="text" id="cVille" placeholder="Cotonou, Bénin"/></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">📋</span>Mission</div>
+    <div class="g1" style="margin-bottom:12px">
+      <div class="fg"><label for="mTitre">Titre / Objet *</label><input type="text" id="mTitre" placeholder="Création site vitrine + app mobile"/></div>
+    </div>
+    <div class="g1" style="margin-bottom:12px">
+      <div class="fg"><label for="mDesc">Description</label><textarea id="mDesc" placeholder="Décrivez le projet, les objectifs, les livrables..."></textarea></div>
+    </div>
+    <div class="g2">
+      <div class="fg"><label for="dDate">Date du devis *</label><input type="date" id="dDate"/></div>
+      <div class="fg"><label for="dValid">Valide jusqu'au</label><input type="date" id="dValid"/></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">💼</span>Prestations &amp; Tarifs</div>
+    <div id="plist"></div>
+    <button class="btn-add" onclick="addPrest()">＋ Ajouter une prestation</button>
+    <div class="total-bar" style="margin-top:14px">
+      <span class="lbl">TOTAL HT</span>
+      <span class="amt" id="totalAff">0 FCFA</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">⚙️</span>Options</div>
+    <div class="g2">
+      <div class="fg"><label for="dNum">N° de devis</label><input type="text" id="dNum"/></div>
+      <div class="fg"><label for="dPay">Paiement</label>
+        <select id="dPay">
+          <option value="50% à la commande, 50% à la livraison">50% commande / 50% livraison</option>
+          <option value="100% à la commande">100% à la commande</option>
+          <option value="100% à la livraison">100% à la livraison</option>
+          <option value="30 jours après livraison">30 jours après livraison</option>
+        </select>
+      </div>
+    </div>
+    <div class="g1" style="margin-top:12px">
+      <div class="fg"><label for="dNotes">Notes complémentaires</label><textarea id="dNotes" placeholder="Délai, conditions particulières..."></textarea></div>
+    </div>
+  </div>
+
+  <div class="btns">
+    <button class="btn-main" onclick="previewDevis()">👁 Aperçu &amp; PDF</button>
+  </div>
+
+</div>
+</div><!-- /page-form -->
+
+<!-- ══════════ PAGE: TABLEAU DE BORD ══════════ -->
+<div class="page" id="page-dash">
+<div class="wrap">
+
+  <div class="period-btns">
+    <button class="pb active" onclick="setPeriod('week')"   id="pb-week">Cette semaine</button>
+    <button class="pb"        onclick="setPeriod('month')"  id="pb-month">Ce mois</button>
+    <button class="pb"        onclick="setPeriod('prev')"   id="pb-prev">Mois précédent</button>
+    <button class="pb"        onclick="setPeriod('all')"    id="pb-all">Tout voir</button>
+    <span style="margin-left:auto;display:flex;gap:8px">
+      <button class="pb" onclick="exporterDevis()" title="Télécharger une copie de tous vos devis">⬇ Sauvegarder</button>
+      <button class="pb" onclick="document.getElementById('fichier-import').click()" title="Restaurer depuis un fichier de sauvegarde">⬆ Restaurer</button>
+      <input type="file" id="fichier-import" accept="application/json" style="display:none" onchange="importerDevis(this)"/>
+    </span>
+  </div>
+
+  <!-- STATS CARDS -->
+  <div class="stats-grid">
+    <div class="stat-card accent">
+      <div class="s-lbl">Devis émis</div>
+      <div class="s-val" id="st-count">0</div>
+      <div class="s-sub" id="st-period">—</div>
+    </div>
+    <div class="stat-card success">
+      <div class="s-lbl">Chiffre d'affaires</div>
+      <div class="s-val" id="st-total">0 FCFA</div>
+      <div class="s-sub">Total HT</div>
+    </div>
+    <div class="stat-card warn">
+      <div class="s-lbl">Devis moyen</div>
+      <div class="s-val" id="st-avg">0 FCFA</div>
+      <div class="s-sub">Par devis</div>
+    </div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="ch-title">📈 Revenus par période</div>
+      <canvas id="chartBar"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="ch-title">🥧 Répartition clients</div>
+      <canvas id="chartDough"></canvas>
+    </div>
+  </div>
+
+  <!-- HISTORIQUE -->
+  <div class="card">
+    <div class="card-title"><span class="ico">📄</span>Historique des devis</div>
+    <div id="hist-wrap"></div>
+  </div>
+
+</div>
+</div><!-- /page-dash -->
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- OVERLAY PREVIEW -->
+<div id="overlay">
+  <div id="overlay-actions">
+    <button id="btn-save" onclick="enregistrerDevis()">💾 Enregistrer</button>
+    <button id="btn-print" onclick="window.print()">🖨 Imprimer / PDF</button>
+    <button id="btn-close" onclick="closePreview()">✕ Fermer</button>
+  </div>
+  <div id="preview-wrap"><div class="dv" id="dv-content"></div></div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════
+   STORAGE
+═══════════════════════════════════════════ */
+var STORE_KEY = 'uptech_devis';
+
+/* Devise utilisée partout dans l'application. Pour facturer dans une autre
+   monnaie, il suffit de modifier ces deux valeurs : le symbole des champs de
+   saisie, des totaux, du devis imprimé et des graphiques suit automatiquement. */
+var DEVISE = { symbole: 'FCFA', decimales: 0 };
+
+document.documentElement.style.setProperty('--devise', '"' + DEVISE.symbole + '"');
+
+function loadAll(){
+  try{ return JSON.parse(localStorage.getItem(STORE_KEY)||'[]'); }
+  catch(e){ return []; }
+}
+function saveAll(arr){ localStorage.setItem(STORE_KEY, JSON.stringify(arr)); }
+
+/* Les devis ne vivent que dans le localStorage de ce navigateur : vider les
+   données de navigation les effacerait tous. Ces deux fonctions permettent
+   d'en garder une copie hors du navigateur. */
+function exporterDevis(){
+  var arr = loadAll();
+  if(!arr.length){ toast('Aucun devis à sauvegarder', '#f39c12'); return; }
+
+  var contenu = JSON.stringify({ version:1, exporte: new Date().toISOString(), devis: arr }, null, 2);
+  var url = URL.createObjectURL(new Blob([contenu], {type:'application/json'}));
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'devis-uptech-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('✅ ' + arr.length + ' devis sauvegardés');
+}
+
+function importerDevis(input){
+  var f = input.files && input.files[0];
+  if(!f) return;
+  var lecteur = new FileReader();
+
+  lecteur.onload = function(){
+    try{
+      var donnees = JSON.parse(lecteur.result);
+      var entrants = Array.isArray(donnees) ? donnees : donnees.devis;
+      if(!Array.isArray(entrants)) throw new Error('format');
+
+      // Fusion sans doublon : les devis déjà présents sont conservés tels quels.
+      var actuels = loadAll();
+      var connus = {};
+      actuels.forEach(function(d){ connus[d.id] = true; });
+      var ajoutes = entrants.filter(function(d){ return d && d.id && !connus[d.id]; });
+
+      saveAll(actuels.concat(ajoutes).sort(function(a,b){ return b.id - a.id; }));
+      updateBadge();
+      renderDash();
+      toast(ajoutes.length ? '✅ ' + ajoutes.length + ' devis restaurés'
+                           : 'Aucun nouveau devis dans ce fichier', ajoutes.length ? null : '#f39c12');
+    }catch(e){
+      toast('⚠️ Fichier illisible', '#e94560');
+    }
+    input.value = '';
+  };
+
+  lecteur.readAsText(f);
+}
+function addDevis(d){
+  var arr = loadAll();
+  arr.unshift(d);
+  saveAll(arr);
+  updateBadge();
+}
+function updateBadge(){
+  document.getElementById('badge-count').textContent = loadAll().length;
+}
+
+/* ═══════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════ */
+function showPage(name){
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('page-'+name).classList.add('active');
+  document.getElementById('nav-'+name).classList.add('active');
+  if(name==='dash') renderDash();
+}
+
+/* ═══════════════════════════════════════════
+   FORM INIT
+═══════════════════════════════════════════ */
+var pid = 0;
+/* L'aperçu est rendu dans la page elle-même : un chemin relatif suffit,
+   y compris à l'impression. Le logo était auparavant dupliqué en base64. */
+var LOGO = 'logo.jpeg';
+
+window.addEventListener('DOMContentLoaded', function(){
+  var today = new Date();
+  function fmt(d){ return d.toISOString().split('T')[0]; }
+  document.getElementById('dDate').value = fmt(today);
+  var v = new Date(today); v.setDate(v.getDate()+30);
+  document.getElementById('dValid').value = fmt(v);
+  var y=today.getFullYear(), m=String(today.getMonth()+1).padStart(2,'0');
+  var r=String(Math.floor(Math.random()*900)+100);
+  document.getElementById('dNum').value='DEV-'+y+m+'-'+r;
+  addPrest(); addPrest();
+  updateBadge();
+  // Init period
+  setPeriod('week');
+});
+
+/* ═══════════════════════════════════════════
+   PRESTATIONS
+═══════════════════════════════════════════ */
+function addPrest(){
+  pid++;
+  var list=document.getElementById('plist');
+  var row=document.createElement('div');
+  row.className='prow'; row.setAttribute('data-pid',pid);
+  var id=pid;
+  row.innerHTML=
+    '<input type="text" class="pdesc" aria-label="Description de la prestation" placeholder="Description de la prestation" oninput="calcTotal()"/>'+
+    '<div class="pw"><input type="number" class="pprix" aria-label="Montant de la prestation" placeholder="0" min="0" step="1" oninput="calcTotal()"/></div>'+
+    '<button class="btn-rm" onclick="rmPrest('+id+')" title="Supprimer">✕</button>';
+  list.appendChild(row);
+  row.querySelector('.pdesc').focus();
+}
+function rmPrest(id){
+  var r=document.querySelector('[data-pid="'+id+'"]');
+  if(r){ r.remove(); calcTotal(); }
+}
+function calcTotal(){
+  var t=0;
+  document.querySelectorAll('.pprix').forEach(function(p){ t+=parseFloat(p.value)||0; });
+  document.getElementById('totalAff').textContent = fmtMoney(t);
+  return t;
+}
+
+/* ═══════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════ */
+function fmtDate(s){
+  if(!s)return'—';
+  var d=new Date(s+'T00:00');
+  return d.toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'});
+}
+function fmtDateShort(s){
+  if(!s)return'—';
+  var d=new Date(s+'T00:00');
+  return d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'});
+}
+function esc(s){
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\n/g,'<br>');
+}
+function fmtMoney(n){
+  return Number(n||0).toLocaleString('fr-FR',{
+    minimumFractionDigits: DEVISE.decimales,
+    maximumFractionDigits: DEVISE.decimales
+  }) + ' ' + DEVISE.symbole;
+}
+function toast(msg,color){
+  var t=document.getElementById('toast');
+  t.textContent=msg;
+  t.style.background=color||'#27ae60';
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); },3800);
+}
+
+/* ═══════════════════════════════════════════
+   GENERATE PREVIEW
+═══════════════════════════════════════════ */
+/* Devis affiché dans l'aperçu, tant qu'il n'a pas été enregistré. */
+var devisEnCours = null;
+
+function previewDevis(){
+  var cNom=document.getElementById('cNom').value.trim();
+  var mTitre=document.getElementById('mTitre').value.trim();
+  var dDate=document.getElementById('dDate').value;
+  if(!cNom)  { alert('⚠️ Veuillez saisir le nom du client.'); return; }
+  if(!mTitre){ alert('⚠️ Veuillez saisir le titre de la mission.'); return; }
+  if(!dDate) { alert('⚠️ Veuillez saisir la date du devis.'); return; }
+
+  var prest=[];
+  document.querySelectorAll('.prow').forEach(function(row){
+    var d=row.querySelector('.pdesc').value.trim();
+    var p=parseFloat(row.querySelector('.pprix').value)||0;
+    if(d||p) prest.push({desc:d||'Prestation',prix:p});
+  });
+  var total=0; prest.forEach(function(p){ total+=p.prix; });
+  if(!prest.length || total<=0){
+    alert('⚠️ Ajoutez au moins une prestation avec un montant supérieur à zéro.');
+    return;
+  }
+
+  var data={
+    id: Date.now(),
+    num:   document.getElementById('dNum').value||'DEV-001',
+    date:  document.getElementById('dDate').value,
+    valid: document.getElementById('dValid').value,
+    cNom: cNom,
+    cEmail:document.getElementById('cEmail').value,
+    cTel:  document.getElementById('cTel').value,
+    cVille:document.getElementById('cVille').value,
+    titre: mTitre,
+    desc:  document.getElementById('mDesc').value.trim(),
+    pay:   document.getElementById('dPay').value,
+    notes: document.getElementById('dNotes').value.trim(),
+    prest: prest,
+    total: total,
+    statut:'pending'
+  };
+
+  // L'aperçu ne sauvegarde rien : l'enregistrement est une action distincte,
+  // sinon chaque vérification avant envoi polluait l'historique.
+  devisEnCours = data;
+  buildPreview(data);
+  document.getElementById('overlay').classList.add('open');
+
+  var btn = document.getElementById('btn-save');
+  btn.disabled = false;
+  btn.textContent = '💾 Enregistrer';
+  toast('👁 Aperçu — le devis n’est pas encore enregistré', '#f39c12');
+}
+
+function enregistrerDevis(){
+  if(!devisEnCours) return;
+  addDevis(devisEnCours);
+  devisEnCours = null;
+
+  var btn = document.getElementById('btn-save');
+  btn.disabled = true;
+  btn.textContent = '✅ Enregistré';
+  toast('✅ Devis enregistré');
+
+  // Numéro suivant, une fois le précédent réellement conservé.
+  var today=new Date();
+  var y=today.getFullYear(), m=String(today.getMonth()+1).padStart(2,'0');
+  var r=String(Math.floor(Math.random()*900)+100);
+  document.getElementById('dNum').value='DEV-'+y+m+'-'+r;
+}
+
+function closePreview(){
+  if(devisEnCours && !confirm("Ce devis n'a pas été enregistré. Fermer quand même ?")) return;
+  devisEnCours = null;
+  document.getElementById('overlay').classList.remove('open');
+}
+
+/* ═══════════════════════════════════════════
+   BUILD HTML PREVIEW
+═══════════════════════════════════════════ */
+function buildPreview(d){
+  var rows='';
+  d.prest.forEach(function(p){
+    rows+='<div class="dv-tr"><span class="dc">'+esc(p.desc)+'</span><span class="dp">'+fmtMoney(p.prix)+'</span></div>';
+  });
+  var html=
+    '<div class="dv-head">'+
+      '<div class="dv-badge">DEVIS</div>'+
+      '<div class="dv-head-inner">'+
+        '<img src="'+LOGO+'" alt="UpTech" style="height:46px;border-radius:7px;object-fit:contain"/>'+
+        '<div><div class="co-name">UpTech</div><div class="co-sub">Agence Digitale – Web &amp; Mobile</div><div class="co-email">olivetokponwe@gmail.com</div></div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="dv-stripe"></div>'+
+    '<div class="dv-meta">'+
+      '<div class="dv-mc"><div class="ml">N° Devis</div><div class="mv">'+esc(d.num)+'</div></div>'+
+      '<div class="dv-mc"><div class="ml">Date d\'émission</div><div class="mv">'+fmtDate(d.date)+'</div></div>'+
+      '<div class="dv-mc"><div class="ml">Valide jusqu\'au</div><div class="mv">'+fmtDate(d.valid)+'</div></div>'+
+    '</div>'+
+    '<div class="dv-parties">'+
+      '<div class="dv-party from"><div class="dv-ph">DE</div><div class="dv-pb"><div class="dv-pname">UpTech – TOKPONWE Olive</div><div class="dv-pinfo">olivetokponwe@gmail.com<br>Développeur Web &amp; Mobile<br>Fondateur – UpTech Agence Digitale</div></div></div>'+
+      '<div class="dv-party to"><div class="dv-ph">POUR</div><div class="dv-pb"><div class="dv-pname">'+esc(d.cNom)+'</div><div class="dv-pinfo">'+
+        (d.cEmail?esc(d.cEmail)+'<br>':'')+(d.cTel?esc(d.cTel)+'<br>':'')+(d.cVille?esc(d.cVille):'')+
+      '</div></div></div>'+
+    '</div>'+
+    '<div class="dv-objet"><span class="ol">Objet</span><span class="ov">'+esc(d.titre)+'</span></div>'+
+    (d.desc?'<div class="dv-desc">'+esc(d.desc)+'</div>':'')+
+    '<div class="dv-table">'+
+      '<div class="dv-th"><span>Description de la prestation</span><span>Montant</span></div>'+
+      rows+
+      '<div class="dv-ttl"><span class="tl">TOTAL HT</span><span class="tv">'+fmtMoney(d.total)+'</span></div>'+
+    '</div>'+
+    '<div class="dv-cond"><div class="ct">Conditions &amp; Notes</div><div class="cb"><strong>Paiement :</strong> '+esc(d.pay)+(d.notes?'<br>'+esc(d.notes):'')+' </div></div>'+
+    '<div class="dv-footer"><div class="fs"></div><p>UpTech – Agence Digitale | olivetokponwe@gmail.com</p><p>Ce devis est valable jusqu\'au '+fmtDate(d.valid)+'</p></div>';
+
+  document.getElementById('dv-content').innerHTML=html;
+}
+
+/* ═══════════════════════════════════════════
+   DASHBOARD
+═══════════════════════════════════════════ */
+var currentPeriod='week';
+var chartBar=null, chartDough=null;
+
+function setPeriod(p){
+  currentPeriod=p;
+  ['week','month','prev','all'].forEach(function(x){
+    document.getElementById('pb-'+x).classList.toggle('active',x===p);
+  });
+  if(document.getElementById('page-dash').classList.contains('active')) renderDash();
+}
+
+function getDateRange(period){
+  var now=new Date();
+  var from,to=new Date(now);
+  to.setHours(23,59,59,999);
+  if(period==='week'){
+    from=new Date(now);
+    var day=from.getDay()||7; // Mon=1
+    from.setDate(from.getDate()-(day-1));
+    from.setHours(0,0,0,0);
+  } else if(period==='month'){
+    from=new Date(now.getFullYear(),now.getMonth(),1);
+    from.setHours(0,0,0,0);
+  } else if(period==='prev'){
+    from=new Date(now.getFullYear(),now.getMonth()-1,1);
+    from.setHours(0,0,0,0);
+    to=new Date(now.getFullYear(),now.getMonth(),0);
+    to.setHours(23,59,59,999);
+  } else {
+    from=new Date(2000,0,1);
+  }
+  return {from:from,to:to};
+}
+
+function filterDevis(period){
+  var all=loadAll();
+  if(period==='all') return all;
+  var range=getDateRange(period);
+  return all.filter(function(d){
+    var dt=new Date(d.date+'T00:00');
+    return dt>=range.from && dt<=range.to;
+  });
+}
+
+function periodLabel(p){
+  var labels={week:'Cette semaine',month:'Ce mois-ci',prev:'Mois précédent',all:'Tous les devis'};
+  return labels[p]||p;
+}
+
+function renderDash(){
+  var filtered=filterDevis(currentPeriod);
+  var count=filtered.length;
+  var total=filtered.reduce(function(s,d){ return s+d.total; },0);
+  var avg=count?total/count:0;
+
+  document.getElementById('st-count').textContent=count;
+  document.getElementById('st-total').textContent=fmtMoney(total);
+  document.getElementById('st-avg').textContent=fmtMoney(avg);
+  document.getElementById('st-period').textContent=periodLabel(currentPeriod);
+
+  renderBarChart(filtered);
+  renderDoughnut(filtered);
+  renderHistory(filtered);
+}
+
+/* ── BAR CHART ── */
+function renderBarChart(data){
+  // Group by date
+  var groups={};
+  data.forEach(function(d){
+    var key=d.date||'?';
+    if(!groups[key]) groups[key]={label:fmtDateShort(d.date),total:0};
+    groups[key].total+=d.total;
+  });
+  var keys=Object.keys(groups).sort();
+  var labels=keys.map(function(k){ return groups[k].label; });
+  var values=keys.map(function(k){ return groups[k].total; });
+
+  var ctx=document.getElementById('chartBar').getContext('2d');
+  if(chartBar) chartBar.destroy();
+  chartBar=new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels: labels.length?labels:['Aucun devis'],
+      datasets:[{
+        label:'Revenus (' + DEVISE.symbole + ')',
+        data: values.length?values:[0],
+        backgroundColor:'rgba(233,69,96,.75)',
+        borderColor:'#e94560',
+        borderWidth:1,
+        borderRadius:5
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:true,
+      plugins:{legend:{display:false}},
+      scales:{
+        y:{
+          beginAtZero:true,
+          ticks:{callback:function(v){ return fmtMoney(v); }},
+          grid:{color:'#f0f2f8'}
+        },
+        x:{grid:{display:false}}
+      }
+    }
+  });
+}
+
+/* ── DOUGHNUT CHART ── */
+function renderDoughnut(data){
+  // Group by client
+  var groups={};
+  data.forEach(function(d){
+    var k=d.cNom||'Inconnu';
+    if(!groups[k]) groups[k]=0;
+    groups[k]+=d.total;
+  });
+  var labels=Object.keys(groups);
+  var values=labels.map(function(k){ return groups[k]; });
+  var colors=['#e94560','#0f3460','#27ae60','#f39c12','#8e44ad','#16a085','#d35400'];
+
+  var ctx=document.getElementById('chartDough').getContext('2d');
+  if(chartDough) chartDough.destroy();
+  chartDough=new Chart(ctx,{
+    type:'doughnut',
+    data:{
+      labels: labels.length?labels:['Aucun devis'],
+      datasets:[{
+        data: values.length?values:[1],
+        backgroundColor: labels.length?colors.slice(0,labels.length):['#dde3f0'],
+        borderWidth:2, borderColor:'#fff'
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:true,
+      plugins:{
+        legend:{position:'bottom',labels:{font:{size:11},padding:10}}
+      }
+    }
+  });
+}
+
+/* ── HISTORY TABLE ── */
+function renderHistory(data){
+  var wrap=document.getElementById('hist-wrap');
+  if(!data.length){
+    wrap.innerHTML='<div class="empty-state"><div class="es-icon">📭</div><p>Aucun devis sur cette période.</p></div>';
+    return;
+  }
+  var rows='';
+  data.forEach(function(d){
+    var badge=d.statut==='ok'
+      ?'<span class="badge-s ok">Accepté</span>'
+      :'<span class="badge-s pending">En attente</span>';
+    rows+='<tr>'+
+      '<td class="date">'+fmtDateShort(d.date)+'</td>'+
+      '<td><strong>'+esc(d.cNom)+'</strong><br><small style="color:var(--muted)">'+esc(d.num)+'</small></td>'+
+      '<td>'+esc(d.titre).substring(0,40)+(d.titre.length>40?'…':'')+'</td>'+
+      '<td class="amt">'+fmtMoney(d.total)+'</td>'+
+      '<td>'+badge+'</td>'+
+      '<td>'+
+        '<button class="hist-action" onclick="viewDevis(\''+d.id+'\')">👁 Voir</button> '+
+        '<button class="hist-action" onclick="toggleStatut(\''+d.id+'\')" style="margin-left:4px">'+(d.statut==='ok'?'↩ Annuler':'✅ Accepté')+'</button>'+
+      '</td>'+
+    '</tr>';
+  });
+  wrap.innerHTML=
+    '<table class="hist-table">'+
+      '<thead><tr><th>Date</th><th>Client</th><th>Mission</th><th>Total HT</th><th>Statut</th><th>Actions</th></tr></thead>'+
+      '<tbody>'+rows+'</tbody>'+
+    '</table>';
+}
+
+function viewDevis(id){
+  var all=loadAll();
+  var d=all.find(function(x){ return String(x.id)===String(id); });
+  if(!d) return;
+  buildPreview(d);
+  document.getElementById('overlay').classList.add('open');
+}
+
+function toggleStatut(id){
+  var all=loadAll();
+  var idx=all.findIndex(function(x){ return String(x.id)===String(id); });
+  if(idx<0) return;
+  all[idx].statut=all[idx].statut==='ok'?'pending':'ok';
+  saveAll(all);
+  renderDash();
+  toast(all[idx].statut==='ok'?'✅ Devis marqué comme accepté':'↩ Statut remis en attente', all[idx].statut==='ok'?'#27ae60':'#e67e22');
+}
+</script>
+</body>
+</html>

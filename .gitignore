@@ -1,0 +1,13 @@
+# Sauvegardes de devis exportées depuis l'application
+devis-uptech-*.json
+
+# Système
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Éditeurs
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
